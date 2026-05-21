@@ -39,7 +39,7 @@ async def run(bot: commands.Bot) -> bool:
         all_passed = False
 
     # 4. Cogs loaded
-    expected_cogs = ["cogs.general", "cogs.fun"]
+    expected_cogs = ["cogs.general", "cogs.fun", "cogs.weather"]
     for cog in expected_cogs:
         loaded = cog in bot.extensions
         results.append(_row(f"Cog: {cog}", loaded))
@@ -53,7 +53,25 @@ async def run(bot: commands.Bot) -> bool:
     if not cmds_ok:
         all_passed = False
 
-    # 6. Meme API reachable (meme command dependency)
+    # 6. Open-Meteo reachable (weather command dependency)
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://geocoding-api.open-meteo.com/v1/search",
+                params={"name": "London", "count": 1},
+                timeout=aiohttp.ClientTimeout(total=5),
+            ) as resp:
+                meteo_ok = resp.status == 200
+    except Exception as e:
+        meteo_ok = False
+        results.append(_row("Open-Meteo API (/weather)", False, str(e)))
+    else:
+        results.append(_row("Open-Meteo API (/weather)", meteo_ok, f"HTTP {resp.status}" if not meteo_ok else "reachable"))
+
+    if not meteo_ok:
+        all_passed = False
+
+    # 7. Meme API reachable (meme command dependency)
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(

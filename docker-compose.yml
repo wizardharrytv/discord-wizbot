@@ -2,6 +2,8 @@ services:
   wizbot:
     build: .
     env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1
     volumes:
       - .:/app
     restart: unless-stopped

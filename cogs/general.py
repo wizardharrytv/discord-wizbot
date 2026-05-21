@@ -26,6 +26,7 @@ class General(commands.Cog):
         embed = discord.Embed(title="wizbot commands", color=discord.Color.blurple())
         embed.add_field(name="General", value="`/ping` `/uptime` `/help`", inline=False)
         embed.add_field(name="Fun", value="`/8ball` `/dice` `/meme`", inline=False)
+        embed.add_field(name="Weather", value="`/weather` `!weather`", inline=False)
         await ctx.respond(embed=embed)
 
 
